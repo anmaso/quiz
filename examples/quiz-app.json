@@ -1,0 +1,141 @@
+{
+  "title": "Quiz App: How It Works",
+  "description": "A short quiz about this quiz app — its URL parameters, file format, and behaviour.",
+  "questions": [
+    {
+      "section": "Loading",
+      "text": "Which query string parameter tells the app where to load a quiz from?",
+      "options": ["<code>?file=</code>", "<code>?quiz=</code>", "<code>?load=</code>", "<code>?json=</code>"],
+      "correct": 1,
+      "explanation": "<strong><code>?quiz=</code></strong> is the main parameter. <code>?url=</code> and <code>?q=</code> are accepted as aliases."
+    },
+    {
+      "section": "Loading",
+      "text": "What happens when the page is opened <em>without</em> a quiz parameter?",
+      "options": [
+        "It shows an error",
+        "It loads a random quiz",
+        "It shows a home page with help and an input box for the quiz URL",
+        "It redirects to GitHub"
+      ],
+      "correct": 2,
+      "explanation": "The home page explains the format and lets you paste a URL; submitting reloads the page with <code>?quiz=&lt;url&gt;</code>."
+    },
+    {
+      "section": "Loading",
+      "text": "Which of these quiz URLs can be loaded? Select all that apply.",
+      "options": [
+        "A relative path like <code>examples/quiz-app.json</code>",
+        "A raw GitHub URL on <code>raw.githubusercontent.com</code>",
+        "A raw gist URL on <code>gist.githubusercontent.com</code>",
+        "A file on a server that does not send CORS headers"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Relative paths are resolved against the page. Cross-origin files load only when the server allows CORS — GitHub raw and gist raw do; a server without CORS headers is blocked by the browser."
+    },
+    {
+      "section": "File format",
+      "text": "In a question object, what does <code>\"correct\": 2</code> mean?",
+      "options": [
+        "The second option is correct",
+        "The third option is correct",
+        "Two options are correct",
+        "The question is worth 2 points"
+      ],
+      "correct": 1,
+      "explanation": "Indexes are <strong>zero-based</strong>: <code>0</code> is the first option, so <code>2</code> is the third."
+    },
+    {
+      "section": "File format",
+      "text": "How do you make a question multiple-choice?",
+      "options": [
+        "Set <code>\"multi\": true</code>",
+        "Use an array for <code>correct</code>, e.g. <code>[0, 2]</code>",
+        "Add more than four options",
+        "Prefix the text with <code>[multi]</code>"
+      ],
+      "correct": 1,
+      "explanation": "When <code>correct</code> is an array, the options become checkboxes and a <strong>Submit</strong> button appears. You must choose exactly the right set to score."
+    },
+    {
+      "section": "File format",
+      "text": "Which fields of a question are <strong>required</strong>? Select all that apply.",
+      "options": ["<code>text</code>", "<code>options</code>", "<code>correct</code>", "<code>section</code>", "<code>explanation</code>"],
+      "correct": [0, 1, 2],
+      "explanation": "<code>section</code> and <code>explanation</code> are optional. At the top level, <code>title</code> and <code>description</code> are optional too, and you may even supply a bare array of questions."
+    },
+    {
+      "section": "Safety",
+      "text": "A quiz file contains <code>&lt;img src=x onerror=alert(1)&gt;</code> in an explanation. What happens?",
+      "options": [
+        "The alert pops up",
+        "The quiz refuses to load",
+        "The tag is dropped because only an allow-list of tags is kept, without attributes",
+        "The browser asks for permission"
+      ],
+      "correct": 2,
+      "explanation": "Content is parsed in an inert document and rebuilt from an <strong>allow-list</strong> (e.g. <code>strong</code>, <code>em</code>, <code>code</code>, <code>pre</code>, <code>ul</code>, <code>a</code>…). Unknown tags are unwrapped, dangerous ones like <code>script</code> are removed, and all attributes except a safe link <code>href</code> are stripped."
+    },
+    {
+      "section": "Safety",
+      "text": "Which of these are kept when rendering quiz text? Select all that apply.",
+      "options": [
+        "<code>&lt;strong&gt;</code> bold text",
+        "<code>&lt;pre&gt;</code> code blocks",
+        "<code>&lt;script&gt;</code> tags",
+        "Links with an <code>https:</code> href",
+        "<code>style=\"…\"</code> attributes"
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "Formatting tags and safe links survive. Scripts are removed entirely, and inline styles (like every other attribute) are stripped."
+    },
+    {
+      "section": "Behaviour",
+      "text": "You answer half the questions and reload the page. What happens?",
+      "options": [
+        "Everything resets",
+        "Your answers are restored from your browser's local storage",
+        "Answers are fetched from a server",
+        "Only the score is kept"
+      ],
+      "correct": 1,
+      "explanation": "Progress is saved in <code>localStorage</code> per quiz URL. If the quiz file changes, the saved progress is discarded. Use <strong>Restart quiz</strong> on the results page to start over."
+    },
+    {
+      "section": "Behaviour",
+      "text": "What does adding <code>&amp;shuffle=1</code> to the URL do?",
+      "options": [
+        "Shuffles the questions only",
+        "Shuffles the options only",
+        "Shuffles both questions and options",
+        "Picks a random subset of questions"
+      ],
+      "correct": 2,
+      "explanation": "Both the question order and each question's option order are shuffled. The order is saved with your progress, so reloading doesn't reshuffle mid-quiz."
+    },
+    {
+      "section": "Behaviour",
+      "text": "Which keyboard shortcuts are supported while answering? Select all that apply.",
+      "options": [
+        "Letters <kbd>A</kbd>–<kbd>Z</kbd> or digits <kbd>1</kbd>–<kbd>9</kbd> to pick an option",
+        "<kbd>Enter</kbd> to submit or go to the next question",
+        "<kbd>←</kbd> / <kbd>→</kbd> to navigate",
+        "<kbd>Ctrl</kbd>+<kbd>Z</kbd> to undo an answer"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Answers are locked once given — there's no undo, but you can restart the quiz from the results page."
+    },
+    {
+      "section": "Appearance",
+      "text": "How is the initial colour theme chosen?",
+      "options": [
+        "Always dark",
+        "Always light",
+        "From your last choice, falling back to your OS colour-scheme preference",
+        "From a field in the quiz file"
+      ],
+      "correct": 2,
+      "explanation": "The toggle in the top-right switches between dark and light; your choice is remembered. Before you choose, the app follows <code>prefers-color-scheme</code>."
+    }
+  ]
+}
