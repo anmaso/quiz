@@ -4,10 +4,10 @@
   "questions": [
     {
       "section": "Loading",
-      "text": "Where does the app read the quiz URL from?",
-      "options": ["A cookie", "The URL hash, e.g. <code>#quiz=&lt;url&gt;</code>", "A <code>&lt;meta&gt;</code> tag", "The page title"],
-      "correct": 1,
-      "explanation": "The quiz URL goes in the <strong>hash</strong>: <code>#quiz=&lt;url&gt;</code>, or just <code>#&lt;url&gt;</code>. Using the hash leaves the query string free for hosts that need it, such as gistpreview's <code>?&lt;gist-id&gt;</code>. <code>?quiz=</code> in the query string still works as a fallback."
+      "text": "Where can you put the quiz URL? Select all that apply.",
+      "options": ["A cookie", "The URL hash, e.g. <code>#quiz=&lt;url&gt;</code>", "The query string, e.g. <code>?quiz=&lt;url&gt;</code>", "The page title"],
+      "correct": [1, 2],
+      "explanation": "Use the <strong>query string</strong> (<code>?quiz=&lt;url&gt;</code>) or the <strong>hash</strong> (<code>#quiz=&lt;url&gt;</code>, or just <code>#&lt;url&gt;</code>). The hash leaves the query string free for hosts that need it, such as gistpreview's <code>?&lt;gist-id&gt;</code>. If both are present, the hash wins."
     },
     {
       "section": "Loading",

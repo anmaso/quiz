@@ -3,28 +3,29 @@
 A single-page, dependency-free quiz runner. Point it at a JSON file and it renders an interactive quiz with a question sidebar, live score, explanations, results screen, saved progress, and a dark/light theme toggle.
 
 ```
-index.html#quiz=<url-to-quiz.json>
-index.html#<url-to-quiz.json>          (shorthand)
+index.html?quiz=<url-to-quiz.json>     (query string)
+index.html#quiz=<url-to-quiz.json>     (hash)
+index.html#<url-to-quiz.json>          (hash shorthand)
 ```
 
 Without a quiz URL the page shows a home screen with help and an input box to paste one.
 
-Try it: `index.html#quiz=examples/quiz-app.json`
+Try it: `index.html?quiz=examples/quiz-app.json`
 
 ## URL parameters
-
-Parameters go in the URL **hash**, separated by `&`, so the query string stays free for hosts that use it themselves. For example, [gistpreview](https://github.com/gistpreview/gistpreview.github.io) needs `?<gist-id>`:
-
-```
-https://gistpreview.github.io/?<gist-id>#quiz=https://gist.githubusercontent.com/<user>/<id>/raw/quiz.json
-```
 
 | Parameter | Description |
 |-----------|-------------|
 | `quiz` (aliases `url`, `q`) | URL of the quiz JSON. Absolute, or relative to the page. |
 | `shuffle=1` | Shuffle question order and option order. |
 
-If the hash doesn't start with one of these keys, the whole hash is used as the quiz URL. The same parameters in the query string (`?quiz=…`) still work as a fallback; the hash wins if both are present.
+Parameters can go in the **query string** (`?quiz=…&shuffle=1`) or in the **hash** (`#quiz=…&shuffle=1`). If both are present, the hash wins. In the hash, if the text doesn't start with one of these keys, the whole hash is used as the quiz URL.
+
+Use the hash on hosts that need the query string for themselves. For example, [gistpreview](https://github.com/gistpreview/gistpreview.github.io) needs `?<gist-id>`:
+
+```
+https://gistpreview.github.io/?<gist-id>#quiz=https://gist.githubusercontent.com/<user>/<id>/raw/quiz.json
+```
 
 ## Quiz file format
 
