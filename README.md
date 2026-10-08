@@ -3,19 +3,28 @@
 A single-page, dependency-free quiz runner. Point it at a JSON file and it renders an interactive quiz with a question sidebar, live score, explanations, results screen, saved progress, and a dark/light theme toggle.
 
 ```
-index.html?quiz=<url-to-quiz.json>
+index.html#quiz=<url-to-quiz.json>
+index.html#<url-to-quiz.json>          (shorthand)
 ```
 
-Without the `quiz` parameter the page shows a home screen with help and an input box to paste a quiz URL.
+Without a quiz URL the page shows a home screen with help and an input box to paste one.
 
-Try it: `index.html?quiz=examples/quiz-app.json`
+Try it: `index.html#quiz=examples/quiz-app.json`
 
 ## URL parameters
+
+Parameters go in the URL **hash**, separated by `&`, so the query string stays free for hosts that use it themselves. For example, [gistpreview](https://github.com/gistpreview/gistpreview.github.io) needs `?<gist-id>`:
+
+```
+https://gistpreview.github.io/?<gist-id>#quiz=https://gist.githubusercontent.com/<user>/<id>/raw/quiz.json
+```
 
 | Parameter | Description |
 |-----------|-------------|
 | `quiz` (aliases `url`, `q`) | URL of the quiz JSON. Absolute, or relative to the page. |
 | `shuffle=1` | Shuffle question order and option order. |
+
+If the hash doesn't start with one of these keys, the whole hash is used as the quiz URL. The same parameters in the query string (`?quiz=…`) still work as a fallback; the hash wins if both are present.
 
 ## Quiz file format
 
@@ -60,7 +69,7 @@ The app is a static `index.html`, so it works on **GitHub Pages**:
 
 1. Repository **Settings → Pages → Build and deployment → Deploy from a branch**.
 2. Pick the branch and `/ (root)`, save.
-3. Open `https://<user>.github.io/<repo>/?quiz=examples/quiz-app.json`.
+3. Open `https://<user>.github.io/<repo>/#quiz=examples/quiz-app.json`.
 
 Quizzes can live in the same repo (use a relative path) or anywhere that serves them with CORS headers — e.g. `raw.githubusercontent.com`, `gist.githubusercontent.com` (use the gist's **Raw** link), or another GitHub Pages site.
 
@@ -70,7 +79,7 @@ Quizzes can live in the same repo (use a relative path) or anywhere that serves 
 
 ```sh
 python3 -m http.server 8000
-# open http://localhost:8000/?quiz=examples/quiz-app.json
+# open http://localhost:8000/#quiz=examples/quiz-app.json
 ```
 
 ## Behaviour

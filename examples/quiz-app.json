@@ -4,10 +4,10 @@
   "questions": [
     {
       "section": "Loading",
-      "text": "Which query string parameter tells the app where to load a quiz from?",
-      "options": ["<code>?file=</code>", "<code>?quiz=</code>", "<code>?load=</code>", "<code>?json=</code>"],
+      "text": "Where does the app read the quiz URL from?",
+      "options": ["A cookie", "The URL hash, e.g. <code>#quiz=&lt;url&gt;</code>", "A <code>&lt;meta&gt;</code> tag", "The page title"],
       "correct": 1,
-      "explanation": "<strong><code>?quiz=</code></strong> is the main parameter. <code>?url=</code> and <code>?q=</code> are accepted as aliases."
+      "explanation": "The quiz URL goes in the <strong>hash</strong>: <code>#quiz=&lt;url&gt;</code>, or just <code>#&lt;url&gt;</code>. Using the hash leaves the query string free for hosts that need it, such as gistpreview's <code>?&lt;gist-id&gt;</code>. <code>?quiz=</code> in the query string still works as a fallback."
     },
     {
       "section": "Loading",
@@ -19,7 +19,7 @@
         "It redirects to GitHub"
       ],
       "correct": 2,
-      "explanation": "The home page explains the format and lets you paste a URL; submitting reloads the page with <code>?quiz=&lt;url&gt;</code>."
+      "explanation": "The home page explains the format and lets you paste a URL; submitting reloads the page with <code>#quiz=&lt;url&gt;</code>."
     },
     {
       "section": "Loading",
@@ -103,7 +103,7 @@
     },
     {
       "section": "Behaviour",
-      "text": "What does adding <code>&amp;shuffle=1</code> to the URL do?",
+      "text": "What does adding <code>&amp;shuffle=1</code> after the quiz URL in the hash do?",
       "options": [
         "Shuffles the questions only",
         "Shuffles the options only",
