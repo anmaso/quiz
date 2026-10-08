@@ -341,13 +341,45 @@
   }
 
   // ---------- Params ----------
-  var params = new URLSearchParams(location.search);
-  var source = params.get('quiz') || params.get('url') || params.get('q');
-  var shuffleOn = /^(1|true|yes|on)$/i.test(params.get('shuffle') || '');
-  var homeHref = location.pathname;
+  // Parameters live in the hash (#quiz=<url>&shuffle=1) so the query string is
+  // left alone for hosts that use it themselves, e.g. gistpreview's ?<gist-id>.
+  // A bare hash (#https://…/quiz.json) is taken as the quiz URL.
+  // The same parameters also work in the query string (?quiz=<url>);
+  // the hash wins when both are present.
+  var PARAM_RE = /^(quiz|url|q|shuffle)=/;
+  function readParams(str) {
+    // Pieces that aren't one of our keys are glued back onto the previous value,
+    // so an unencoded quiz URL with its own "&" survives.
+    var raw = {}, last = null;
+    str.split('&').forEach(function (part) {
+      if (PARAM_RE.test(part)) {
+        var i = part.indexOf('=');
+        last = part.slice(0, i);
+        raw[last] = part.slice(i + 1);
+      } else if (last) {
+        raw[last] += '&' + part;
+      }
+    });
+    var out = {};
+    for (var k in raw) out[k] = safeDecode(raw[k]);
+    return out;
+  }
+  var hash = location.hash.replace(/^#/, '');
+  var hashParams = PARAM_RE.test(hash) ? readParams(hash) : (hash ? { quiz: safeDecode(hash) } : {});
+  var queryParams = readParams(location.search.replace(/^\?/, ''));
+  function param(name) { return hashParams[name] != null ? hashParams[name] : queryParams[name]; }
+  function safeDecode(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+  var source = param('quiz') || param('url') || param('q');
+  var shuffleOn = /^(1|true|yes|on)$/i.test(param('shuffle') || '');
+
+  // Home keeps the host's own query string but drops ours and the hash.
+  var otherQuery = location.search.replace(/^\?/, '').split('&').filter(function (p) { return p && !PARAM_RE.test(p); }).join('&');
+  var homeHref = location.pathname + (otherQuery ? '?' + otherQuery : '');
   document.getElementById('brand').setAttribute('href', homeHref);
 
-  function quizHref(src) { return homeHref + '?quiz=' + encodeURIComponent(src); }
+  function quizHref(src) { return homeHref + '#quiz=' + encodeURIComponent(src); }
+  // Changing only the hash doesn't reload the page, so do it ourselves.
+  window.addEventListener('hashchange', function () { location.reload(); });
 
   // ---------- Home ----------
   var EXAMPLE = 'examples/quiz-app.json';
@@ -402,11 +434,14 @@
       h('section', { class: 'card' },
         h('h2', { text: 'How it works' }),
         h('ul', null,
-          h('li', null, 'Open this page with ', h('code', { text: '?quiz=<url>' }),
-            ' (', h('code', { text: '?url=' }), ' and ', h('code', { text: '?q=' }), ' work too). Share that link to share the quiz.'),
+          h('li', null, 'Open this page with ', h('code', { text: '#quiz=<url>' }),
+            ' (or just ', h('code', { text: '#<url>' }), ') or ', h('code', { text: '?quiz=<url>' }),
+            ' after the address. Share that link to share the quiz.'),
+          h('li', null, 'Use the ', h('code', { text: '#' }), ' form on hosts that need the query string themselves, like gistpreview (',
+            h('code', { text: '?<gist-id>#quiz=<url>' }), '). If both are present, the ', h('code', { text: '#' }), ' wins.'),
           h('li', null, 'The URL can be absolute, or relative to this page (e.g. ', h('code', { text: EXAMPLE }), ').'),
           h('li', null, 'The server hosting the JSON must allow cross-origin requests (CORS). Raw GitHub files, raw gists and GitHub Pages all do.'),
-          h('li', null, 'Add ', h('code', { text: '&shuffle=1' }), ' to shuffle questions and options.'),
+          h('li', null, 'Use ', h('code', { text: '#quiz=<url>&shuffle=1' }), ' to shuffle questions and options.'),
           h('li', null, 'Keyboard: ', h('kbd', { text: 'A' }), '–', h('kbd', { text: 'Z' }), ' or ',
             h('kbd', { text: '1' }), '–', h('kbd', { text: '9' }), ' pick an option, ',
             h('kbd', { text: 'Enter' }), ' submits / goes next, ',
